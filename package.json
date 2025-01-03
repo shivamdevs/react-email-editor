@@ -12,14 +12,10 @@
   },
   "scripts": {
     "start": "tsdx watch",
-    "build": "tsdx build",
     "test": "tsdx test",
     "test:watch": "tsdx test --watch",
     "test:coverage": "tsdx test --coverage",
-    "lint": "tsdx lint",
-    "prepare": "tsdx build",
-    "release": "npm run build && npm publish",
-    "netlify-build": "cd demo && npm install && npm run build"
+    "lint": "tsdx lint"
   },
   "peerDependencies": {
     "react": ">=15"
