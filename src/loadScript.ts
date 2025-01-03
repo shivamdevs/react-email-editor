@@ -15,39 +15,6 @@ const isScriptInjected = (scriptUrl: string) => {
   return injected;
 };
 
-const overrideWindowLocation = () => {
-  const originalLocation = window.location;
-
-  Object.defineProperty(window, 'location', {
-    configurable: true,
-    enumerable: true,
-    get: function() {
-      // Provide a fake location for the target script
-      return {
-        href: 'https://fake-url-for-script.com',
-        protocol: 'https:',
-        host: 'fake-url-for-script.com',
-        hostname: 'fake-url-for-script.com',
-        pathname: '/',
-        search: '',
-        hash: '',
-      };
-    },
-    set: function(newValue) {
-      originalLocation.href = newValue; // Allow regular behavior for other scripts
-    },
-  });
-
-  return () => {
-    // Restore the original window.location
-    Object.defineProperty(window, 'location', {
-      configurable: true,
-      enumerable: true,
-      value: originalLocation,
-    });
-  };
-};
-
 const addCallback = (callback: Function) => {
   callbacks.push(callback);
 };
@@ -69,12 +36,10 @@ export const loadScript = (
   addCallback(callback);
 
   if (!isScriptInjected(scriptUrl)) {
-    const cleanup = overrideWindowLocation();
     const embedScript = document.createElement('script');
     embedScript.setAttribute('src', scriptUrl);
     embedScript.onload = () => {
       loaded = true;
-      cleanup();
       runCallbacks();
     };
     document.head.appendChild(embedScript);
